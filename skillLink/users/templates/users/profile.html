@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile - SkillLink{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- HEADER -->
+    <div class="profile-header">
+        <div class="profile-header-content">
+            <h1><i class="fas fa-user-circle"></i> My Profile</h1>
+            <p>Manage your professional profile and build your reputation</p>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="profile-container">
+        <!-- SIDEBAR + MAIN CONTENT GRID -->
+        <div class="profile-grid">
+            <!-- SIDEBAR -->
+            <div class="profile-sidebar">
+                <!-- PROFILE CARD -->
+                <div class="profile-card">
+                    <div class="profile-avatar-section">
+                        <div class="profile-avatar">
+                            <img id="avatarPreview" src="🎨" alt="Profile Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                            <label for="avatarUpload" class="avatar-upload-label" title="Change profile picture">
+                                <i class="fas fa-camera"></i>
+                            </label>
+                            <input type="file" id="avatarUpload" class="avatar-input" accept="image/*">
+                        </div>
+                        <h2 id="profileName">Sarah Chen</h2>
+                        <p id="profileTitle">UI/UX Designer</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="projectsCount">24</div>
+                            <div class="stat-label">Projects</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="earnedAmount">$8.5K</div>
+                            <div class="stat-label">Earned</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-rating">
+                        <div class="stars-display">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="rating-text">4.9 out of 5 (152 reviews)</div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <a href="{% url 'dashboard' %}" class="action-btn action-btn-primary" style="text-decoration: none;">
+                            <i class="fas fa-chart-line"></i> Go to Dashboard
+                        </a>
+                        <button class="action-btn action-btn-primary" id="editProfileBtn">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                        <button class="action-btn action-btn-secondary">
+                            <i class="fas fa-file-download"></i> Download CV
+                        </button>
+                        <button class="action-btn action-btn-secondary">
+                            <i class="fas fa-share-alt"></i> Share Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT AREA -->
+            <div class="profile-content">
+                <!-- ABOUT SECTION -->
+                <div class="content-section">
+                    <div class="content-section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-align-left"></i> About Me
+                        </h2>
+                        <button class="edit-btn" onclick="editSection('about')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </div>
+                    <div class="content-section-body">
+                        <p id="aboutText" class="info-description">
+                            Creative designer specializing in web and mobile experiences with 8+ years of expertise. 
+                            I'm passionate about creating intuitive user interfaces and solving complex design problems. 
+                            Experienced in design thinking, prototyping, and working in agile environments.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SKILLS SECTION -->
+                <div class="content-section">
+                    <div class="content-section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-star"></i> Skills & Expertise
+                        </h2>
+                        <button class="edit-btn" onclick="editSection('skills')">
+                            <i class="fas fa-plus"></i> Add Skill
+                        </button>
+                    </div>
+                    <div class="content-section-body">
+                        <div class="skills-container" id="skillsContainer">
+                            <div class="skill-tag">
+                                Figma
+                                <span class="skill-remove" onclick="removeSkill(this)">✕</span>
+                            </div>
+                            <div class="skill-tag">
+                                UI Design
+                                <span class="skill-remove" onclick="removeSkill(this)">✕</span>
+                            </div>
+                            <div class="skill-tag">
+                                UX Research
+                                <span class="skill-remove" onclick="removeSkill(this)">✕</span>
+                            </div>
+                            <div class="skill-tag">
+                                Prototyping
+                                <span class="skill-remove" onclick="removeSkill(this)">✕</span>
+                            </div>
+                            <div class="skill-tag">
+                                Mobile Design
+                                <span class="skill-remove" onclick="removeSkill(this)">✕</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WORK EXPERIENCE & PORTFOLIO TABS -->
+                <div class="content-section">
+                    <div class="content-section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-briefcase"></i> Work & Portfolio
+                        </h2>
+                    </div>
+                    <div class="content-section-body">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" onclick="switchTab(event, 'portfolio')">
+                                <i class="fas fa-images"></i> Portfolio (12)
+                            </button>
+                            <button class="tab-btn" onclick="switchTab(event, 'reviews')">
+                                <i class="fas fa-comments"></i> Reviews (45)
+                            </button>
+                        </div>
+
+                        <!-- PORTFOLIO TAB -->
+                        <div id="portfolio" class="tab-content active">
+                            <div style="padding-top: 20px;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px;">
+                                    <div style="aspect-ratio: 1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; cursor: pointer;">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                    <div style="aspect-ratio: 1; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; cursor: pointer;">
+                                        <i class="fas fa-palette"></i>
+                                    </div>
+                                    <div style="aspect-ratio: 1; background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; cursor: pointer;">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </div>
+                                    <div style="aspect-ratio: 1; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; cursor: pointer;">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- REVIEWS TAB -->
+                        <div id="reviews" class="tab-content">
+                            <div style="padding-top: 20px;">
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <div class="review-client">Alex Johnson</div>
+                                        <div class="review-rating">★★★★★</div>
+                                    </div>
+                                    <div class="review-text">
+                                        Sarah is an exceptional designer with great attention to detail. She delivered the project ahead of schedule and exceeded all my expectations. Highly recommended!
+                                    </div>
+                                    <div class="review-date">2 months ago</div>
+                                </div>
+
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <div class="review-client">Emma Davis</div>
+                                        <div class="review-rating">★★★★★</div>
+                                    </div>
+                                    <div class="review-text">
+                                        Excellent communication and professional approach. The designs were modern, clean, and exactly what we needed. Will definitely work together again!
+                                    </div>
+                                    <div class="review-date">3 months ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTACT INFO SECTION -->
+                <div class="content-section">
+                    <div class="content-section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-phone"></i> Contact Information
+                        </h2>
+                        <button class="edit-btn" onclick="editSection('contact')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </div>
+                    <div class="content-section-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-envelope"></i> Email</div>
+                                <div class="info-value" id="contactEmail">sarah.chen@email.com</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-phone"></i> Phone</div>
+                                <div class="info-value" id="contactPhone">+1 (555) 234-5678</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-map-marker-alt"></i> Location</div>
+                                <div class="info-value" id="contactLocation">San Francisco, CA</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label"><i class="fas fa-briefcase"></i> Hourly Rate</div>
+                                <div class="info-value" id="contactRate">$75/hour</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div class="modal-backdrop" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Edit Profile</h3>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="editName"><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="editName" placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="editTitle"><i class="fas fa-briefcase"></i> Professional Title</label>
+                    <input type="text" id="editTitle" placeholder="e.g., UI/UX Designer">
+                </div>
+
+                <div class="form-group">
+                    <label for="editAbout"><i class="fas fa-align-left"></i> About Me</label>
+                    <textarea id="editAbout" placeholder="Tell us about yourself..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editBio"><i class="fas fa-align-left"></i> Bio</label>
+                    <textarea id="editBio" placeholder="Short bio..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="editEmail" placeholder="your@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="editPhone"><i class="fas fa-phone"></i> Phone</label>
+                    <input type="tel" id="editPhone" placeholder="+1 (555) 123-4567">
+                </div>
+
+                <div class="form-group">
+                    <label for="editLocation"><i class="fas fa-map-marker-alt"></i> Location</label>
+                    <input type="text" id="editLocation" placeholder="City, Country">
+                </div>
+
+                <div class="form-group">
+                    <label for="editRate"><i class="fas fa-dollar-sign"></i> Hourly Rate</label>
+                    <input type="number" id="editRate" placeholder="50" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="editSkill"><i class="fas fa-plus"></i> Add New Skill</label>
+                    <input type="text" id="editSkill" placeholder="Type a skill name">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="save-btn">
+                        <i class="fas fa-check"></i> Save Changes
+                    </button>
+                    <button type="button" class="cancel-btn" onclick="closeModal()">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'users/js/profile.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelancer Dashboard - SkillLink</title>
+    {% load static %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'users/css/freelancer_dashboard.css' %}">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav>
+            <a href="{% url 'profile' %}" class="nav-link">Profile</a>
+            <a href="{% url 'freelancer-dashboard' %}" class="nav-link active">Dashboard</a>
+            <a href="{% url 'project-list-create' %}" class="nav-link">Browse Projects</a>
+            <a href="{% url 'logout' %}" class="nav-link" style="float: right;">Logout</a>
+        </nav>
+        
+        <!-- Header -->
+        <header>
+            <h1>Welcome, {{ user.username }}! 👋</h1>
+            <p class="user-info">Your Freelancer Dashboard | <span>{{ user.title }}</span> | Member since <span>{{ user.date_joined|date:"M Y" }}</span></p>
+        </header>
+        
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ total_projects }}</div>
+                <div class="stat-label">Active & Completed Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ total_bids }}</div>
+                <div class="stat-label">Total Bids Submitted</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ accepted_bids_count }}</div>
+                <div class="stat-label">Bids Accepted</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${{ total_earnings|floatformat:2 }}</div>
+                <div class="stat-label">Total Earnings</div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content-grid">
+            <!-- Active Projects -->
+            <div class="card">
+                <h2>🚀 Active Projects</h2>
+                {% if active_projects %}
+                    {% for project in active_projects %}
+                        <div class="project-item">
+                            <div class="project-title">{{ project.title }}</div>
+                            <div class="project-budget">${{ project.budget }}</div>
+                            <div class="project-meta">Client: {{ project.client.username }}</div>
+                            <div class="project-meta">Posted: {{ project.created_at|date:"M d, Y" }}</div>
+                            <span class="status-badge status-in-progress">IN PROGRESS</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p>No active projects yet. Start browsing available projects!</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Completed Projects -->
+            <div class="card">
+                <h2>✅ Completed Projects</h2>
+                {% if completed_projects %}
+                    {% for project in completed_projects %}
+                        <div class="project-item">
+                            <div class="project-title">{{ project.title }}</div>
+                            <div class="project-budget">${{ project.budget }}</div>
+                            <div class="project-meta">Client: {{ project.client.username }}</div>
+                            <div class="project-meta">Completed: {{ project.created_at|date:"M d, Y" }}</div>
+                            <span class="status-badge status-completed">COMPLETED</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p>No completed projects yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Recent Bids -->
+            <div class="card">
+                <h2>📝 Recent Bids</h2>
+                {% if all_bids %}
+                    {% for bid in all_bids %}
+                        <div class="bid-item">
+                            <div class="project-title">{{ bid.project.title }}</div>
+                            <div class="project-budget">Bid: ${{ bid.amount }}</div>
+                            <div class="project-meta">Delivery: {{ bid.delivery_days }} days</div>
+                            <div class="project-meta">Submitted: {{ bid.created_at|date:"M d, Y" }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p>No bids submitted yet. Start exploring projects!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Pending Bids Summary Section -->
+        {% if pending_bids_count > 0 %}
+        <div class="card">
+            <h2>⏳ Pending Bids Awaiting Response</h2>
+            <div class="stat-card" style="background: #fff3cd; border-left: 4px solid #ffc107;">
+                <div style="color: #856404;">
+                    <p>You have <strong>{{ pending_bids_count }}</strong> bid(s) waiting for client response.</p>
+                    <p style="margin-top: 10px; font-size: 14px;">Check back regularly for updates! Clients will notify you when they're ready to hire.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Action Buttons -->
+        <div style="margin-top: 30px;">
+            <div class="button-group">
+                <a href="{% url 'project-list-create' %}" class="btn btn-primary">Browse More Projects</a>
+                <a href="{% url 'profile' %}" class="btn btn-secondary">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

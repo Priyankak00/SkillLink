@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Join SkillLink - Register{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'users/css/register.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="registration-container">
+        <!-- LEFT SIDE -->
+        <div class="registration-left">
+            <div class="registration-left-content">
+                <h2><i class="fas fa-rocket"></i> Join SkillLink</h2>
+                <p>Start your freelance career and connect with clients worldwide!</p>
+                <ul class="benefits-list">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Build your professional portfolio</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Access high-paying projects</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Real-time payments & secure transactions</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>24/7 customer support</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Get valuable reviews and ratings</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="registration-right">
+            <h3>Create Your Account</h3>
+
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <form id="registrationForm">
+                {% csrf_token %}
+                
+                <!-- User Role Selection -->
+                <div class="form-group">
+                    <label><i class="fas fa-user-tag"></i> <strong>I am a...</strong></label>
+                    <div class="skills-group" style="margin-top: 10px;">
+                        <input type="radio" id="roleFreelancer" name="role" value="freelancer" required>
+                        <label for="roleFreelancer"><strong>Freelancer</strong> - Looking for projects to work on</label>
+                        
+                        <input type="radio" id="roleClient" name="role" value="client" style="margin-top: 10px;">
+                        <label for="roleClient"><strong>Client</strong> - Looking to hire professionals</label>
+                    </div>
+                </div>
+                
+                <!-- Full Name -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName"><i class="fas fa-user"></i> First Name</label>
+                        <input type="text" id="firstName" name="first_name" placeholder="John" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName"><i class="fas fa-user"></i> Last Name</label>
+                        <input type="text" id="lastName" name="last_name" placeholder="Doe" required>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                </div>
+
+                <!-- Professional Title -->
+                <div class="form-group" id="titleField">
+                    <label for="title"><i class="fas fa-briefcase"></i> Professional Title</label>
+                    <input type="text" id="title" name="title" placeholder="e.g., UI/UX Designer, Full Stack Developer">
+                </div>
+
+                <!-- Category - Only for Freelancers -->
+                <div class="form-group" id="categoryField" style="display: none;">
+                    <label for="category"><i class="fas fa-list"></i> Category</label>
+                    <select id="category" name="category">
+                        <option value="">Select your category...</option>
+                        <option value="designer">Designer (UI/UX, Graphic, etc.)</option>
+                        <option value="developer">Developer (Web, Mobile, Backend)</option>
+                        <option value="writer">Writer (Content, Blog, Copy)</option>
+                        <option value="marketer">Marketer (Digital, Social, SEO)</option>
+                        <option value="translator">Translator</option>
+                        <option value="consultant">Consultant & Specialist</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Skills Selection - Only for Freelancers -->
+                <div class="form-group" id="skillsField" style="display: none;">
+                    <label><i class="fas fa-star"></i> Select Your Skills</label>
+                    <div class="skills-group">
+                        <input type="checkbox" id="skill1" name="skills" class="skill-option" value="React">
+                        <label for="skill1">React</label>
+
+                        <input type="checkbox" id="skill2" name="skills" class="skill-option" value="Vue.js">
+                        <label for="skill2">Vue.js</label>
+
+                        <input type="checkbox" id="skill3" name="skills" class="skill-option" value="Node.js">
+                        <label for="skill3">Node.js</label>
+
+                        <input type="checkbox" id="skill4" name="skills" class="skill-option" value="Python">
+                        <label for="skill4">Python</label>
+
+                        <input type="checkbox" id="skill5" name="skills" class="skill-option" value="Figma">
+                        <label for="skill5">Figma</label>
+
+                        <input type="checkbox" id="skill6" name="skills" class="skill-option" value="Photoshop">
+                        <label for="skill6">Photoshop</label>
+
+                        <input type="checkbox" id="skill7" name="skills" class="skill-option" value="SEO">
+                        <label for="skill7">SEO</label>
+
+                        <input type="checkbox" id="skill8" name="skills" class="skill-option" value="Content Writing">
+                        <label for="skill8">Content Writing</label>
+                    </div>
+                </div>
+
+                <!-- Bio -->
+                <div class="form-group">
+                    <label for="bio"><i class="fas fa-align-left"></i> About You (Bio)</label>
+                    <textarea id="bio" name="bio" placeholder="Tell us about yourself and your experience..." required></textarea>
+                </div>
+
+                <!-- Profile Picture Upload -->
+                <div class="form-group">
+                    <label><i class="fas fa-images"></i> Profile Picture</label>
+                    <div class="file-upload-wrapper">
+                        <label for="profilePicture" class="file-upload-btn">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            Click to upload or drag and drop
+                        </label>
+                        <input type="file" id="profilePicture" name="profile_picture" class="file-input" accept="image/*">
+                        <img id="previewImage" class="preview-image" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="password" name="password" placeholder="Min. 8 characters" required>
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label for="confirmPassword"><i class="fas fa-lock"></i> Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Re-enter your password" required>
+                </div>
+
+                <!-- Terms & Conditions -->
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I agree to the <a href="#" target="_blank">Terms & Conditions</a> and <a href="#" target="_blank">Privacy Policy</a></label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="loading-spinner" id="spinner"></span>
+                    <span id="submitBtnText">Create Account & Start Earning</span>
+                </button>
+
+                <!-- Login Link -->
+                <div class="login-link">
+                    Already have an account? <a href="/api/users/login/">Login here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'users/js/register.js' %}"></script>
+{% endblock %}

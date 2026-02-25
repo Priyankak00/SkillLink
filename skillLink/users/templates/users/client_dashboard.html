@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard - SkillLink</title>
+    {% load static %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'users/css/client_dashboard.css' %}">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav>
+            <a href="{% url 'profile' %}" class="nav-link">Profile</a>
+            <a href="{% url 'client-dashboard' %}" class="nav-link active">Dashboard</a>
+            <a href="{% url 'project-list-create' %}" class="nav-link">Post a Project</a>
+            <a href="{% url 'logout' %}" class="nav-link" style="float: right;">Logout</a>
+        </nav>
+        
+        <!-- Header -->
+        <header>
+            <h1>Welcome, {{ user.first_name|default:user.username }}! 👋</h1>
+            <p class="user-info">Your Client Dashboard | Total Projects: <span>{{ total_projects }}</span> | Member since <span>{{ user.date_joined|date:"M Y" }}</span></p>
+        </header>
+        
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">{{ total_projects }}</div>
+                <div class="stat-label">Projects Posted</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ active_projects|length }}</div>
+                <div class="stat-label">Projects In Progress</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ total_bids_received }}</div>
+                <div class="stat-label">Bids Received</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${{ total_spending|floatformat:2 }}</div>
+                <div class="stat-label">Total Spending</div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content-grid">
+            <!-- Open Projects -->
+            <div class="card">
+                <h2>🔓 Open for Bidding</h2>
+                {% if open_projects %}
+                    {% for item in projects_with_bids %}
+                        {% if item.project.status == 'open' %}
+                        <div class="project-item">
+                            <div class="project-title">
+                                {{ item.project.title }}
+                                <span class="bid-count">{{ item.bids_count }} bids</span>
+                            </div>
+                            <div class="project-budget">${{ item.project.budget }}</div>
+                            <div class="project-meta">Created: {{ item.project.created_at|date:"M d, Y" }}</div>
+                            <span class="status-badge status-open">OPEN FOR BIDDING</span>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p>No open projects. Post a new project to get started!</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Active Projects -->
+            <div class="card">
+                <h2>🚀 Active Projects</h2>
+                {% if active_projects %}
+                    {% for project in active_projects %}
+                        <div class="project-item">
+                            <div class="project-title">{{ project.title }}</div>
+                            <div class="project-budget">${{ project.budget }}</div>
+                            <div class="project-meta">Freelancer: {{ project.freelancer.username }}</div>
+                            <div class="project-meta">Started: {{ project.created_at|date:"M d, Y" }}</div>
+                            <span class="status-badge status-in-progress">IN PROGRESS</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p>No active projects in progress.</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Completed Projects -->
+            <div class="card">
+                <h2>✅ Completed Projects</h2>
+                {% if completed_projects %}
+                    {% for project in completed_projects %}
+                        <div class="project-item">
+                            <div class="project-title">{{ project.title }}</div>
+                            <div class="project-budget">${{ project.budget }}</div>
+                            <div class="project-meta">Freelancer: {{ project.freelancer.username }}</div>
+                            <div class="project-meta">Completed: {{ project.created_at|date:"M d, Y" }}</div>
+                            <span class="status-badge status-completed">COMPLETED</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <p>No completed projects yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Spending Summary Card -->
+            <div class="card">
+                <div class="spending-summary">
+                    <div class="label">Total Spending on Completed Projects</div>
+                    <div class="amount">${{ total_spending|floatformat:2 }}</div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h3 style="color: #333;">Project Breakdown</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                        <div style="background: #e8f1fe; padding: 15px; border-radius: 5px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #667eea;">{{ open_projects|length }}</div>
+                            <div style="color: #666; font-size: 12px;">Open for Bidding</div>
+                        </div>
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 5px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #ffc107;">{{ active_projects|length }}</div>
+                            <div style="color: #666; font-size: 12px;">Currently Active</div>
+                        </div>
+                        <div style="background: #d4edda; padding: 15px; border-radius: 5px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #28a745;">{{ completed_projects|length }}</div>
+                            <div style="color: #666; font-size: 12px;">Completed</div>
+                        </div>
+                        <div style="background: #f8d7da; padding: 15px; border-radius: 5px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; color: #dc3545;">{{ cancelled_projects|length }}</div>
+                            <div style="color: #666; font-size: 12px;">Cancelled</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div style="margin-top: 30px;">
+            <div class="button-group">
+                <a href="{% url 'project-list-create' %}" class="btn btn-primary">Post New Project</a>
+                <a href="{% url 'profile' %}" class="btn btn-secondary">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

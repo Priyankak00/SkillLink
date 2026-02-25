@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - SkillLink{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'users/css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <!-- LEFT SIDE -->
+    <div class="login-left">
+        <div class="login-left-content">
+            <h2><i class="fas fa-sign-in-alt"></i> Welcome Back</h2>
+            <p>Log in to access your SkillLink account and manage your freelance business</p>
+            <ul class="features-list">
+                <li>
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure authentication</span>
+                </li>
+                <li>
+                    <i class="fas fa-briefcase"></i>
+                    <span>Manage your projects</span>
+                </li>
+                <li>
+                    <i class="fas fa-comment-dots"></i>
+                    <span>Communicate with clients</span>
+                </li>
+                <li>
+                    <i class="fas fa-wallet"></i>
+                    <span>Track earnings & payments</span>
+                </li>
+                <li>
+                    <i class="fas fa-star"></i>
+                    <span>Build your reputation</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="login-right">
+        <h3>Login to Your Account</h3>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <form id="loginForm">
+            {% csrf_token %}
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <!-- Remember & Forgot -->
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox" id="rememberMe" name="rememberMe">
+                    Remember me
+                </label>
+                <a href="#" onclick="alert('Password reset feature coming soon!')">Forgot password?</a>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="login-btn">
+                <span class="loading-spinner" id="spinner"></span>
+                <span>Log In</span>
+            </button>
+
+            <!-- Social Login (UI only for now) -->
+            <div class="divider">
+                <span>Or continue with</span>
+            </div>
+
+            <div class="social-buttons">
+                <button type="button" class="social-btn" onclick="alert('Google login coming soon!')">
+                    <i class="fab fa-google"></i> Google
+                </button>
+                <button type="button" class="social-btn" onclick="alert('GitHub login coming soon!')">
+                    <i class="fab fa-github"></i> GitHub
+                </button>
+            </div>
+
+            <!-- Sign Up Link -->
+            <div class="signup-link">
+                Don't have an account? <a href="/api/users/register/">Sign up now</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'users/js/login.js' %}"></script>
+{% endblock %}
