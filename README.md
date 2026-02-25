@@ -2,6 +2,7 @@
 A Real-Time Freelance Service Marketplace
 
 # Folder Structure
+```
 skilllink/
 ├── skilllink/
 │   ├── __init__.py
@@ -41,7 +42,7 @@ skilllink/
     ├── tests.py
     ├── urls.py
     └── views.py
-
+```
 
 # Tech Stack Categories:
 
