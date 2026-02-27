@@ -15,7 +15,7 @@
         <nav>
             <a href="{% url 'profile' %}" class="nav-link">Profile</a>
             <a href="{% url 'freelancer-dashboard' %}" class="nav-link active">Dashboard</a>
-            <a href="{% url 'project-list-create' %}" class="nav-link">Browse Projects</a>
+            <a href="{% url 'projects:project-list' %}" class="nav-link">Browse Projects</a>
             <a href="{% url 'logout' %}" class="nav-link" style="float: right;">Logout</a>
         </nav>
         
@@ -123,7 +123,7 @@
         <!-- Action Buttons -->
         <div style="margin-top: 30px;">
             <div class="button-group">
-                <a href="{% url 'project-list-create' %}" class="btn btn-primary">Browse More Projects</a>
+                <a href="{% url 'projects:project-list' %}" class="btn btn-primary">Browse More Projects</a>
                 <a href="{% url 'profile' %}" class="btn btn-secondary">Edit Profile</a>
             </div>
         </div>

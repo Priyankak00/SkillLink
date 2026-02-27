@@ -8,20 +8,21 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'users/css/client_dashboard.css' %}">
-</head>
+</head> 
 <body>
     <div class="container">
         <!-- Navigation -->
         <nav>
             <a href="{% url 'profile' %}" class="nav-link">Profile</a>
             <a href="{% url 'client-dashboard' %}" class="nav-link active">Dashboard</a>
-            <a href="{% url 'project-list-create' %}" class="nav-link">Post a Project</a>
-            <a href="{% url 'logout' %}" class="nav-link" style="float: right;">Logout</a>
+            <a href="{% url 'projects:project-list' %}" class="nav-link">Browse Projects</a>
+            <a href="{% url 'projects:project-create' %}" class="nav-link">Post a Project</a>
+            <a href="{% url 'logout' %}" class="nav-link nav-link-logout">Logout</a>
         </nav>
         
         <!-- Header -->
         <header>
-            <h1>Welcome, {{ user.first_name|default:user.username }}! 👋</h1>
+            <h1>Welcome, {{ user.first_name|default:user.username }}!</h1>
             <p class="user-info">Your Client Dashboard | Total Projects: <span>{{ total_projects }}</span> | Member since <span>{{ user.date_joined|date:"M Y" }}</span></p>
         </header>
         
@@ -49,7 +50,7 @@
         <div class="content-grid">
             <!-- Open Projects -->
             <div class="card">
-                <h2>🔓 Open for Bidding</h2>
+                <h2>Open for Bidding</h2>
                 {% if open_projects %}
                     {% for item in projects_with_bids %}
                         {% if item.project.status == 'open' %}
@@ -73,7 +74,7 @@
             
             <!-- Active Projects -->
             <div class="card">
-                <h2>🚀 Active Projects</h2>
+                <h2>Active Projects</h2>
                 {% if active_projects %}
                     {% for project in active_projects %}
                         <div class="project-item">
@@ -93,7 +94,7 @@
             
             <!-- Completed Projects -->
             <div class="card">
-                <h2>✅ Completed Projects</h2>
+                <h2>Completed Projects</h2>
                 {% if completed_projects %}
                     {% for project in completed_projects %}
                         <div class="project-item">
@@ -145,7 +146,7 @@
         <!-- Action Buttons -->
         <div style="margin-top: 30px;">
             <div class="button-group">
-                <a href="{% url 'project-list-create' %}" class="btn btn-primary">Post New Project</a>
+                <a href="{% url 'projects:project-create' %}" class="btn btn-primary">Post New Project</a>
                 <a href="{% url 'profile' %}" class="btn btn-secondary">Edit Profile</a>
             </div>
         </div>

@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Process Payment - {{ project.title }} - SkillLink{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #667eea;
+        --primary-dark: #5568d3;
+        --success: #48bb78;
+        --warning: #ed8936;
+        --danger: #f56565;
+        --light: #f7fafc;
+        --dark: #2d3748;
+        --border: #e2e8f0;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container-wrapper {
+        max-width: 1000px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 1rem;
+        border-bottom: 3px solid var(--primary);
+        padding-bottom: 0.5rem;
+    }
+
+    .project-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .project-summary h4 {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .payment-summary {
+        background: #f0fdf4;
+        border-left: 4px solid var(--success);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .payment-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .payment-row:last-child {
+        border-bottom: none;
+    }
+
+    .payment-row.total {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--success);
+        padding-top: 1rem;
+        border-top: 2px solid #d1fae5;
+    }
+
+    .payment-label {
+        color: var(--dark);
+    }
+
+    .payment-amount {
+        font-weight: 600;
+        color: var(--success);
+    }
+
+    .payment-amount.negative {
+        color: var(--warning);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .radio-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 1rem;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .radio-item:hover {
+        border-color: var(--primary);
+        background: #f8f9ff;
+    }
+
+    .radio-item input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        margin-right: 1rem;
+        margin-top: 0.25rem;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .radio-label {
+        cursor: pointer;
+        flex: 1;
+    }
+
+    .radio-label strong {
+        display: block;
+        color: var(--dark);
+        margin-bottom: 0.25rem;
+    }
+
+    .radio-label p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #718096;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: var(--dark);
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e0;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+
+    .alert-info {
+        background: #e6fffa;
+        color: #0f766e;
+        border-left: 4px solid #14b8a6;
+    }
+
+    .alert-warning {
+        background: #fffbeb;
+        color: #854d0e;
+        border-left: 4px solid #f59e0b;
+    }
+
+    .freelancer-info {
+        background: #f7fafc;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+
+    .freelancer-info strong {
+        color: var(--dark);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-wrapper">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="project-summary">
+        <h4>Project: {{ project.title }}</h4>
+        <p>Status: Completed | Ready for Payment</p>
+    </div>
+
+    <div class="card">
+        <h2 class="card-title">Process Payment</h2>
+
+        <div class="freelancer-info">
+            <strong>Freelancer:</strong> {{ project.freelancer.get_full_name }}
+            <br>
+            <strong>Contact:</strong> {{ project.freelancer.email }}
+        </div>
+
+        <div class="payment-summary">
+            <div class="payment-row">
+                <span class="payment-label">Project Budget:</span>
+                <span class="payment-amount">${{ amount }}</span>
+            </div>
+            <div class="payment-row">
+                <span class="payment-label">SkillLink Platform Fee (10%):</span>
+                <span class="payment-amount negative">-${{ platform_fee|floatformat:2 }}</span>
+            </div>
+            <div class="payment-row total">
+                <span class="payment-label">Freelancer Receives:</span>
+                <span class="payment-amount">${{ net_amount|floatformat:2 }}</span>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Select Payment Method</label>
+                <div class="radio-group">
+                    {% for value, label in form.payment_method.field.choices %}
+                        <div class="radio-item">
+                            <input type="radio" id="id_payment_method_{{ forloop.counter }}" name="payment_method" value="{{ value }}" {% if form.payment_method.value == value %}checked{% endif %}>
+                            <label for="id_payment_method_{{ forloop.counter }}" class="radio-label">
+                                {% if value == 'card' %}
+                                    <strong>💳 Credit/Debit Card</strong>
+                                    <p>Pay from your debit or credit card</p>
+                                {% elif value == 'wallet' %}
+                                    <strong>💰 SkillLink Wallet</strong>
+                                    <p>Use your pre-loaded wallet balance</p>
+                                {% elif value == 'bank_transfer' %}
+                                    <strong>🏦 Bank Transfer</strong>
+                                    <p>Direct transfer from your bank account</p>
+                                {% endif %}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.notes.id_for_label }}">{{ form.notes.label }}</label>
+                {{ form.notes }}
+            </div>
+
+            <div class="alert alert-info">
+                <strong>🔒 Secure Payment:</strong> Your payment information is encrypted and secured. 
+                Once payment is processed, the freelancer will be notified and you both can provide reviews.
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Important:</strong> By processing this payment, you confirm that you are satisfied 
+                with the completed work and authorize SkillLink to release funds to the freelancer.
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Process Payment → ${{ amount }}</button>
+                <a href="{% url 'projects:project-detail' project.id %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

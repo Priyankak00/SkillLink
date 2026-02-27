@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Projects Marketplace - SkillLink{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'projects/css/marketplace.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Marketplace Header -->
+<div class="marketplace-header">
+    <div class="container">
+        <h1>Projects Marketplace</h1>
+        <p>Find exciting projects and submit your proposals to earn money</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="search-filter-section">
+                <h5>Search & Filter</h5>
+                
+                <form id="projectSearchForm">
+                    <!-- Search -->
+                    <div class="filter-group mb-3">
+                        <label for="projectSearch">Search Projects</label>
+                        <input type="text" 
+                               id="projectSearch" 
+                               class="form-control search-input" 
+                               placeholder="Search by title or description..."
+                               autocomplete="off">
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="filter-group mb-3">
+                        <label for="statusFilter">Project Status</label>
+                        <select id="statusFilter" class="form-select">
+                            <option value="">All Statuses</option>
+                            <option value="open">Open for Bidding</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+
+                    <!-- Budget Range -->
+                    <div class="row gx-2">
+                        <div class="col-6">
+                            <div class="filter-group">
+                                <label for="minBudget">Min Budget</label>
+                                <input type="number" 
+                                       id="minBudget" 
+                                       class="form-control search-input" 
+                                       placeholder="Min"
+                                       min="0"
+                                       step="1000">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="filter-group">
+                                <label for="maxBudget">Max Budget</label>
+                                <input type="number" 
+                                       id="maxBudget" 
+                                       class="form-control search-input" 
+                                       placeholder="Max"
+                                       min="0"
+                                       step="1000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Buttons -->
+                    <div class="filter-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                        <button type="button" id="clearFiltersBtn" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Stats -->
+                <div class="mt-4 pt-3 border-top">
+                    <p class="text-muted small mb-2">
+                        <i class="fas fa-info-circle"></i> Tips for success:
+                    </p>
+                    <ul class="small text-muted ps-3 mb-0">
+                        <li>Write compelling proposals</li>
+                        <li>Showcase your experience</li>
+                        <li>Be realistic with rates</li>
+                        <li>Respond quickly to messages</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="col-lg-9">
+            <div class="row" id="projectsContainer">
+                <!-- Projects will be loaded here by JavaScript -->
+                <div class="col-12 text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted mt-2">Loading projects...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Project Detail Modal -->
+<div class="modal fade" id="projectDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Project Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Content loaded by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bid Form Modal -->
+<div class="modal fade" id="bidFormModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Submit Your Proposal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form loaded by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container for Notifications -->
+<div id="toastContainer"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'projects/js/marketplace.js' %}"></script>
+{% endblock %}

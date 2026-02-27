@@ -311,6 +311,13 @@ body {
     text-decoration: underline;
 }
 
+.field-error {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: none;
+}
+
 .error-message {
     background: #fee;
     border: 1px solid #fcc;

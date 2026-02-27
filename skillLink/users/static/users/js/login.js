@@ -31,15 +31,21 @@ loginForm.addEventListener('submit', async function(e) {
     };
 
     try {
-        // Get CSRF token from cookie
-        const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        // Get CSRF token from form
+        const csrfElement = document.querySelector('[name=csrfmiddlewaretoken]');
+        const csrf_token = csrfElement ? csrfElement.value : '';
         
-        const response = await fetch('/api/users/login/', {
+        if (!csrf_token) {
+            throw new Error('CSRF token not found');
+        }
+
+        const response = await fetch('/users/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrf_token,
             },
+            credentials: 'same-origin',
             body: JSON.stringify(data)
         });
 
@@ -62,8 +68,18 @@ loginForm.addEventListener('submit', async function(e) {
                 localStorage.setItem('authToken', result.token);
             }
 
+            // Redirect to appropriate dashboard based on role
+            const userRole = result.user?.role || 'client';
+            let dashboardURL = '/users/dashboard/';
+            
+            if (userRole === 'freelancer') {
+                dashboardURL = '/users/dashboard/freelancer/';
+            } else if (userRole === 'client') {
+                dashboardURL = '/users/dashboard/client/';
+            }
+
             setTimeout(() => {
-                window.location.href = '/api/users/profile/';
+                window.location.href = dashboardURL;
             }, 1500);
         } else {
             const error = await response.json();

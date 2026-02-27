@@ -1,0 +1,429 @@
+/* ============ PROJECTS MARKETPLACE STYLES ============ */
+
+/* Projects Container */
+.projects-marketplace {
+    min-height: 100vh;
+    background: #f8f9fa;
+    padding: 2rem 0;
+}
+
+.marketplace-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0 0 20px 20px;
+}
+
+.marketplace-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.marketplace-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+/* Search and Filter Section */
+.search-filter-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+.search-filter-section h5 {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.search-input {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.filter-group {
+    margin-bottom: 1rem;
+}
+
+.filter-group label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #495057;
+    display: block;
+}
+
+.filter-group select {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.filter-group select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.filter-buttons button {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+/* Project Cards */
+.project-card {
+    height: 100%;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.project-card .card-title {
+    color: #2d3748;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-card .card-text {
+    color: #718096;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.project-card .text-muted {
+    color: #a0aec0 !important;
+}
+
+.project-card .badge {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+}
+
+.project-card .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.project-card .btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.project-card .btn-primary:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.project-card .btn-success {
+    background: #48bb78;
+    color: white;
+}
+
+.project-card .btn-success:hover {
+    background: #38a169;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+}
+
+/* Status Badge Colors */
+.badge.bg-success {
+    background: #48bb78 !important;
+    color: white !important;
+}
+
+.badge.bg-warning {
+    background: #ed8936 !important;
+    color: white !important;
+}
+
+.badge.bg-info {
+    background: #4299e1 !important;
+    color: white !important;
+}
+
+.badge.bg-light {
+    background: #edf2f7 !important;
+    color: #2d3748 !important;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    color: #cbd5e0;
+    margin-bottom: 1rem;
+}
+
+.empty-state h5 {
+    color: #4a5568;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #a0aec0;
+    margin-bottom: 0;
+}
+
+/* Modal Customization */
+.modal-header {
+    background: #f7fafc;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.modal-header .modal-title {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.project-detail h4 {
+    color: #2d3748;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.project-detail h6 {
+    font-weight: 600;
+    color: #718096;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+/* Bid Form */
+#bidForm {
+    margin-bottom: 1rem;
+}
+
+#bidForm .form-label {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.75rem;
+}
+
+#bidForm .form-control,
+#bidForm textarea {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+#bidForm .form-control:focus,
+#bidForm textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+#bidForm .input-group-text {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-right: none;
+    font-weight: 600;
+    color: #667eea;
+}
+
+#bidForm .input-group .form-control {
+    border-left: none;
+}
+
+#bidForm .input-group .form-control:focus {
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    border-color: #667eea;
+}
+
+#bidForm textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+#bidForm small {
+    display: block;
+    margin-top: 0.5rem;
+    color: #a0aec0;
+    font-size: 0.85rem;
+}
+
+/* Loading Spinner */
+.spinner-border {
+    color: #667eea;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 2rem;
+}
+
+.pagination .page-link {
+    border-radius: 8px;
+    margin: 0 0.25rem;
+    border-color: #e2e8f0;
+    color: #667eea;
+}
+
+.pagination .page-link:hover {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.pagination .page-item.active .page-link {
+    background: #667eea;
+    border-color: #667eea;
+}
+
+/* Toast Notifications */
+#toastContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.toast {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+}
+
+.toast.alert-success {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.toast.alert-danger {
+    background: #fed7d7;
+    color: #742a2a;
+}
+
+.toast.alert-info {
+    background: #bee3f8;
+    color: #2c5282;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .marketplace-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .marketplace-header p {
+        font-size: 1rem;
+    }
+
+    .search-filter-section {
+        padding: 1.5rem;
+    }
+
+    .filter-buttons {
+        flex-direction: column;
+    }
+
+    .project-card {
+        margin-bottom: 1rem;
+    }
+
+    #toastContainer {
+        left: 10px;
+        right: 10px;
+        width: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .projects-marketplace {
+        padding: 1rem 0;
+    }
+
+    .marketplace-header {
+        padding: 2rem 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .search-filter-section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .project-card .btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Alert Styling */
+.alert {
+    border-radius: 8px;
+    border: none;
+    padding: 1rem;
+}
+
+.alert.alert-sm {
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.alert-info {
+    background: #bee3f8;
+    color: #2c5282;
+}
+
+.alert-success {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.alert-danger {
+    background: #fed7d7;
+    color: #742a2a;
+}

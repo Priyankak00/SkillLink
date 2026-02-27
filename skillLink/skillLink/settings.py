@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     'django_celery_results',
     'django_celery_beat',
     'users',
     'chat',
-    'payments',
     'projects',
 ]
 
@@ -124,6 +124,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 # ASGI for Channels
 ASGI_APPLICATION = 'skillLink.asgi.application'
 
@@ -147,3 +149,19 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'support@skilllink.com'
 
 AUTH_USER_MODEL = 'users.User'
+
+LOGIN_URL = '/users/login/'
+LOGIN_REDIRECT_URL = '/projects/marketplace/'
+
+# REST Framework Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FormParser',
+    ],
+}

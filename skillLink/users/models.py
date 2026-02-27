@@ -21,10 +21,10 @@ class User(AbstractUser):
     )
     
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=IS_CLIENT)
-    title = models.CharField(max_length=255, blank=True, null=True)  # Professional title
+    title = models.CharField(max_length=255, blank=True, null=True)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
-    skills = models.JSONField(default=list, blank=True)  # Store skills as JSON array
+    skills = models.JSONField(default=list, blank=True)
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
 
     def __str__(self):

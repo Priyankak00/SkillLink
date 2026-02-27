@@ -1,0 +1,520 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Projects - SkillLink{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #667eea;
+        --primary-dark: #5568d3;
+        --success: #48bb78;
+        --warning: #ed8936;
+        --danger: #f56565;
+        --light: #f7fafc;
+        --dark: #2d3748;
+        --border: #e2e8f0;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .navbar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 1rem 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .navbar-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .navbar-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .navbar-links a {
+        color: var(--dark);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+    .navbar-links a:hover {
+        color: var(--primary);
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .page-header {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        color: var(--dark);
+    }
+
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+
+    .stat-label {
+        color: #718096;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    .tabs {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .tab-btn {
+        background: transparent;
+        border: 2px solid var(--border);
+        color: var(--dark);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .tab-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .tab-btn.active {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .projects-list {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .project-row {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .project-row:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .project-info h3 {
+        font-size: 1.25rem;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .project-meta {
+        display: flex;
+        gap: 2rem;
+        color: #718096;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .project-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .project-description {
+        color: #4a5568;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .project-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-end;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+    }
+
+    .status-open {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+
+    .status-in-progress {
+        background: #fed7d7;
+        color: #742a2a;
+    }
+
+    .status-completed {
+        background: #bee3f8;
+        color: #2c5282;
+    }
+
+    .budget-display {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+
+    .btn-small {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        font-size: 0.85rem;
+        transition: all 0.3s;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    .btn-view:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-edit {
+        background: var(--light);
+        color: var(--primary);
+        border: 2px solid var(--primary);
+    }
+
+    .btn-edit:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-delete {
+        background: var(--light);
+        color: var(--danger);
+        border: 2px solid var(--danger);
+    }
+
+    .btn-delete:hover {
+        background: var(--danger);
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: white;
+        border-radius: 12px;
+    }
+
+    .empty-state-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state-text {
+        color: #718096;
+        margin-bottom: 2rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .bid-item {
+        background: #f0f4ff;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+        .project-row {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .project-actions {
+            align-items: flex-start;
+        }
+
+        .page-header {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="navbar-content">
+        <a href="/" class="navbar-brand">SkillLink</a>
+        <div class="navbar-links">
+            <a href="{% url 'projects:project-list' %}">Projects</a>
+            <a href="{% url 'projects:my-projects' %}">My Projects</a>
+            {% if user.is_authenticated %}
+                <span>Welcome, {{ user.username }}!</span>
+                {% if user.role == 'client' %}
+                    <a href="{% url 'projects:project-create' %}" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 600;">New Project</a>
+                {% endif %}
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>
+            {% if role == 'client' %}
+                📊 My Posted Projects
+            {% else %}
+                💼 My Projects
+            {% endif %}
+        </h1>
+        <a href="{% url 'projects:project-create' %}" class="btn-primary">+ Post New Project</a>
+    </div>
+
+    <!-- Statistics -->
+    {% if role == 'client' %}
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">{{ open }}</div>
+                <div class="stat-label">Open Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ active }}</div>
+                <div class="stat-label">In Progress</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ completed }}</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ projects.count }}</div>
+                <div class="stat-label">Total Projects</div>
+            </div>
+        </div>
+    {% else %}
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number">{{ posted }}</div>
+                <div class="stat-label">Posted Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ accepted }}</div>
+                <div class="stat-label">Accepted Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ active }}</div>
+                <div class="stat-label">In Progress</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ completed }}</div>
+                <div class="stat-label">Completed</div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Projects List -->
+    {% if projects %}
+        <div class="projects-list">
+            {% for project in projects %}
+                <div class="project-row">
+                    <div class="project-info">
+                        <h3>{{ project.title }}</h3>
+                        <div class="project-meta">
+                            <span>📅 Posted {{ project.created_at|date:"M d, Y" }}</span>
+                            {% if role == 'client' %}
+                                <span>🎯 {{ project.bid_count }} Bids</span>
+                            {% else %}
+                                <span>🔷 Client: {{ project.client.username }}</span>
+                            {% endif %}
+                            <span>💰 ${{ project.budget }}</span>
+                        </div>
+                        <div class="project-description">{{ project.description }}</div>
+                    </div>
+                    <div class="project-actions">
+                        <span class="status-badge status-{% if project.status == 'open' %}open{% elif project.status == 'in_progress' %}in-progress{% else %}completed{% endif %}">
+                            {{ project.get_status_display }}
+                        </span>
+                        <a href="{% url 'projects:project-detail' project.pk %}" class="btn-small btn-view">View Details</a>
+                        {% if user == project.client %}
+                            <a href="{% url 'projects:project-update' project.pk %}" class="btn-small btn-edit">Edit</a>
+                            <form method="post" action="{% url 'projects:project-delete' project.pk %}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this project? This action cannot be undone.');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-small btn-delete">Delete</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+            <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem;">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" style="padding: 0.5rem 1rem; background: white; border-radius: 6px; text-decoration: none; color: var(--dark);">« First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" style="padding: 0.5rem 1rem; background: white; border-radius: 6px; text-decoration: none; color: var(--dark);">‹ Previous</a>
+                {% endif %}
+
+                <span style="padding: 0.5rem 1rem;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" style="padding: 0.5rem 1rem; background: white; border-radius: 6px; text-decoration: none; color: var(--dark);">Next ›</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" style="padding: 0.5rem 1rem; background: white; border-radius: 6px; text-decoration: none; color: var(--dark);">Last »</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                {% if role == 'client' %}
+                    🎯
+                {% else %}
+                    💼
+                {% endif %}
+            </div>
+            <div class="empty-state-title">
+                {% if role == 'client' %}
+                    No Projects Posted Yet
+                {% else %}
+                    No Projects Yet
+                {% endif %}
+            </div>
+            <div class="empty-state-text">
+                {% if role == 'client' %}
+                    Start by posting a project to find the perfect freelancer for your needs
+                {% else %}
+                    Post your own projects or browse available projects to place bids and get started
+                {% endif %}
+            </div>
+            <a href="{% if role == 'client' %}{% url 'projects:project-create' %}{% else %}{% url 'projects:project-list' %}{% endif %}" class="btn-primary">
+                {% if role == 'client' %}
+                    Post Your First Project
+                {% else %}
+                    Post a Project or Browse
+                {% endif %}
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

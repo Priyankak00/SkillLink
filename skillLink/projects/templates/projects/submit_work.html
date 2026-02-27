@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Submit Work - {{ project.title }} - SkillLink{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #667eea;
+        --primary-dark: #5568d3;
+        --success: #48bb78;
+        --warning: #ed8936;
+        --danger: #f56565;
+        --light: #f7fafc;
+        --dark: #2d3748;
+        --border: #e2e8f0;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container-wrapper {
+        max-width: 1000px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 1rem;
+        border-bottom: 3px solid var(--primary);
+        padding-bottom: 0.5rem;
+    }
+
+    .project-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .project-summary h4 {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-text {
+        font-size: 0.875rem;
+        color: #718096;
+        margin-top: 0.25rem;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: var(--dark);
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e0;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+
+    .alert-info {
+        background: #e6fffa;
+        color: #0f766e;
+        border-left: 4px solid #14b8a6;
+    }
+
+    .alert-warning {
+        background: #fffbeb;
+        color: #854d0e;
+        border-left: 4px solid #f59e0b;
+    }
+
+    .submission-status {
+        background: #f0fdf4;
+        border-left: 4px solid var(--success);
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 2rem;
+    }
+
+    .submission-status.revision {
+        background: #fef2f2;
+        border-left-color: var(--danger);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-wrapper">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="project-summary">
+        <h4>Project: {{ project.title }}</h4>
+        <p>Budget: ${{ project.budget }} | Status: {{ project.get_status_display }}</p>
+    </div>
+
+    <div class="card">
+        <h2 class="card-title">Submit Your Completed Work</h2>
+
+        {% if existing_work %}
+            {% if existing_work.status == 'approved' %}
+                <div class="submission-status">
+                    <strong>✓ Work Approved!</strong>
+                    <p>Your work was approved on {{ existing_work.approved_at|date:"M d, Y" }}. Payment is being processed.</p>
+                </div>
+            {% elif existing_work.status == 'revision_requested' %}
+                <div class="submission-status revision">
+                    <strong>! Revision Requested</strong>
+                    <p>{{ existing_work.review_notes }}</p>
+                </div>
+            {% elif existing_work.status == 'pending' %}
+                <div class="submission-status">
+                    <strong>Pending Review</strong>
+                    <p>Your work was submitted on {{ existing_work.submitted_at|date:"M d, Y H:i" }}. The client is reviewing it.</p>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.submission_notes.id_for_label }}">{{ form.submission_notes.label }}</label>
+                {{ form.submission_notes }}
+                {% if form.submission_notes.help_text %}
+                    <div class="form-text">{{ form.submission_notes.help_text }}</div>
+                {% endif %}
+                {% if form.submission_notes.errors %}
+                    <div class="form-text" style="color: var(--danger);">
+                        {{ form.submission_notes.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.submission_files_link.id_for_label }}">{{ form.submission_files_link.label }}</label>
+                {{ form.submission_files_link }}
+                {% if form.submission_files_link.help_text %}
+                    <div class="form-text">{{ form.submission_files_link.help_text }}</div>
+                {% endif %}
+                {% if form.submission_files_link.errors %}
+                    <div class="form-text" style="color: var(--danger);">
+                        {{ form.submission_files_link.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 Tip:</strong> Make sure you've included all deliverables and provided clear links to your files. 
+                The project owner will review your submission and either approve it or request revisions.
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Submit Work</button>
+                <a href="{% url 'projects:project-detail' project.id %}" class="btn btn-secondary">Back to Project</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

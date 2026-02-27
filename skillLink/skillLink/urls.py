@@ -21,14 +21,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # API Routes
-    path('api/users/', include('users.urls')),
-    path('api/projects/', include('projects.urls')),
-    path('api/payments/', include('payments.urls')),
-    path('api/chat/', include('chat.urls')),
+    path('projects/', include('projects.urls')),
+    path('users/', include('users.urls')),
+    path('chat/', include('chat.urls')),
     
     # Auth (using djangorestframework simple-jwt or allauth)
-    path('api-auth/', include('rest_framework.urls')),
+    path('auth/', include('rest_framework.urls')),
 ]
     
 if settings.DEBUG:

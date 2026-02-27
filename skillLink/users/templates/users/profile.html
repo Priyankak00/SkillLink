@@ -18,6 +18,14 @@
 
     <!-- MAIN CONTAINER -->
     <div class="profile-container">
+        <!-- Error and Success Messages -->
+        <div id="errorMessage" style="display: none; background-color: #ff6b6b; color: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; font-weight: 500;">
+            <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+        </div>
+        <div id="successMessage" style="display: none; background-color: #51cf66; color: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; font-weight: 500;">
+            <i class="fas fa-check-circle"></i> <span id="successText"></span>
+        </div>
+        
         <!-- SIDEBAR + MAIN CONTENT GRID -->
         <div class="profile-grid">
             <!-- SIDEBAR -->
@@ -26,14 +34,18 @@
                 <div class="profile-card">
                     <div class="profile-avatar-section">
                         <div class="profile-avatar">
-                            <img id="avatarPreview" src="🎨" alt="Profile Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                            {% if user.profile_picture %}
+                                <img id="avatarPreview" src="{{ user.profile_picture.url }}" alt="Profile Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                            {% else %}
+                                <img id="avatarPreview" src="https://ui-avatars.com/api/?name={{ user.first_name|urlencode }}+{{ user.last_name|urlencode }}&size=200&background=667eea&color=fff" alt="Profile Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                            {% endif %}
                             <label for="avatarUpload" class="avatar-upload-label" title="Change profile picture">
                                 <i class="fas fa-camera"></i>
                             </label>
                             <input type="file" id="avatarUpload" class="avatar-input" accept="image/*">
                         </div>
-                        <h2 id="profileName">Sarah Chen</h2>
-                        <p id="profileTitle">UI/UX Designer</p>
+                        <h2 id="profileName">{{ user.first_name }} {{ user.last_name }}</h2>
+                        <p id="profileTitle">{{ user.title|default:"No title set" }}</p>
                     </div>
 
                     <div class="stats-grid">
@@ -71,6 +83,9 @@
                         <button class="action-btn action-btn-secondary">
                             <i class="fas fa-share-alt"></i> Share Profile
                         </button>
+                        <a href="{% url 'logout' %}" class="action-btn action-btn-secondary" style="text-decoration: none; background-color: #ff6b6b; color: white;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
                     </div>
                 </div>
             </div>
@@ -89,9 +104,7 @@
                     </div>
                     <div class="content-section-body">
                         <p id="aboutText" class="info-description">
-                            Creative designer specializing in web and mobile experiences with 8+ years of expertise. 
-                            I'm passionate about creating intuitive user interfaces and solving complex design problems. 
-                            Experienced in design thinking, prototyping, and working in agile environments.
+                            {{ user.bio|default:"No bio added yet. Click Edit to add your professional bio." }}
                         </p>
                     </div>
                 </div>
@@ -102,32 +115,22 @@
                         <h2 class="section-title">
                             <i class="fas fa-star"></i> Skills & Expertise
                         </h2>
-                        <button class="edit-btn" onclick="editSection('skills')">
+                        <button class="edit-btn" id="addSkillBtn" onclick="openSkillsModal()">
                             <i class="fas fa-plus"></i> Add Skill
                         </button>
                     </div>
                     <div class="content-section-body">
                         <div class="skills-container" id="skillsContainer">
-                            <div class="skill-tag">
-                                Figma
-                                <span class="skill-remove" onclick="removeSkill(this)">✕</span>
-                            </div>
-                            <div class="skill-tag">
-                                UI Design
-                                <span class="skill-remove" onclick="removeSkill(this)">✕</span>
-                            </div>
-                            <div class="skill-tag">
-                                UX Research
-                                <span class="skill-remove" onclick="removeSkill(this)">✕</span>
-                            </div>
-                            <div class="skill-tag">
-                                Prototyping
-                                <span class="skill-remove" onclick="removeSkill(this)">✕</span>
-                            </div>
-                            <div class="skill-tag">
-                                Mobile Design
-                                <span class="skill-remove" onclick="removeSkill(this)">✕</span>
-                            </div>
+                            {% if user.skills %}
+                                {% for skill in user.skills %}
+                                    <div class="skill-tag">
+                                        {{ skill }}
+                                        <span class="skill-remove" onclick="removeSkill(this)">✕</span>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p style="color: #666; font-style: italic;">No skills added yet. Click "Add Skill" to get started.</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -212,19 +215,19 @@
                         <div class="info-grid">
                             <div class="info-item">
                                 <div class="info-label"><i class="fas fa-envelope"></i> Email</div>
-                                <div class="info-value" id="contactEmail">sarah.chen@email.com</div>
+                                <div class="info-value" id="contactEmail">{{ user.email|default:"Not provided" }}</div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label"><i class="fas fa-phone"></i> Phone</div>
-                                <div class="info-value" id="contactPhone">+1 (555) 234-5678</div>
+                                <div class="info-label"><i class="fas fa-user"></i> Username</div>
+                                <div class="info-value" id="contactUsername">{{ user.username }}</div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label"><i class="fas fa-map-marker-alt"></i> Location</div>
-                                <div class="info-value" id="contactLocation">San Francisco, CA</div>
+                                <div class="info-label"><i class="fas fa-tag"></i> Category</div>
+                                <div class="info-value" id="contactCategory">{{ user.get_category_display|default:"Not specified" }}</div>
                             </div>
                             <div class="info-item">
-                                <div class="info-label"><i class="fas fa-briefcase"></i> Hourly Rate</div>
-                                <div class="info-value" id="contactRate">$75/hour</div>
+                                <div class="info-label"><i class="fas fa-user-tag"></i> Role</div>
+                                <div class="info-value" id="contactRole">{{ user.get_role_display }}</div>
                             </div>
                         </div>
                     </div>
@@ -245,6 +248,7 @@
             <div class="success-message" id="successMessage"></div>
 
             <form id="editForm">
+                {% csrf_token %}
                 <div class="form-group">
                     <label for="editName"><i class="fas fa-user"></i> Full Name</label>
                     <input type="text" id="editName" placeholder="Enter your full name">
@@ -299,6 +303,45 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- SKILLS MODAL -->
+    <div class="modal-backdrop" id="skillsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Manage Skills</h3>
+                <button class="modal-close" onclick="closeSkillsModal()">✕</button>
+            </div>
+
+            <div class="error-message" id="skillsErrorMessage"></div>
+            <div class="success-message" id="skillsSuccessMessage"></div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="newSkillInput" style="display: block; margin-bottom: 10px; font-weight: 600;"><i class="fas fa-plus"></i> Add New Skill</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="newSkillInput" placeholder="Enter skill name (e.g., Python, UI Design)" style="flex: 1; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem;">
+                    <button type="button" id="addSkillBtnModal" class="save-btn" style="padding: 10px 20px;">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label style="display: block; margin-bottom: 10px; font-weight: 600;"><i class="fas fa-tags"></i> Your Skills</label>
+                <div id="skillsListContainer" style="display: flex; flex-wrap: wrap; gap: 10px; min-height: 60px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+                    <p style="color: #999; font-style: italic; width: 100%;">No skills added yet</p>
+                </div>
+            </div>
+
+            <div class="form-actions" style="margin-top: 20px;">
+                <button type="button" class="save-btn" onclick="saveSkills()">
+                    <i class="fas fa-check"></i> Save Skills
+                </button>
+                <button type="button" class="cancel-btn" onclick="closeSkillsModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

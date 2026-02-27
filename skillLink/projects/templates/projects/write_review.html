@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Write Review - {{ project.title }} - SkillLink{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #667eea;
+        --primary-dark: #5568d3;
+        --success: #48bb78;
+        --warning: #ed8936;
+        --danger: #f56565;
+        --light: #f7fafc;
+        --dark: #2d3748;
+        --border: #e2e8f0;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container-wrapper {
+        max-width: 1000px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 1rem;
+        border-bottom: 3px solid var(--primary);
+        padding-bottom: 0.5rem;
+    }
+
+    .project-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .project-summary h4 {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+
+    .star-rating {
+        display: flex;
+        gap: 0.5rem;
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .star {
+        cursor: pointer;
+        color: #cbd5e0;
+        transition: color 0.3s;
+    }
+
+    .star:hover,
+    .star.active {
+        color: #f59e0b;
+    }
+
+    .select-dropdown {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        font-size: 1rem;
+        background: white;
+        color: var(--dark);
+        cursor: pointer;
+        transition: border-color 0.3s;
+    }
+
+    .select-dropdown:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+        font-family: inherit;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-text {
+        font-size: 0.875rem;
+        color: #718096;
+        margin-top: 0.25rem;
+    }
+
+    .radio-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .radio-option {
+        display: flex;
+        align-items: center;
+    }
+
+    .radio-option input[type="radio"] {
+        margin-right: 0.5rem;
+        cursor: pointer;
+    }
+
+    .radio-option label {
+        margin: 0;
+        cursor: pointer;
+        font-weight: 400;
+    }
+
+    .rating-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .rating-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: var(--dark);
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e0;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+
+    .alert-success {
+        background: #f0fdf4;
+        color: #166534;
+        border-left: 4px solid var(--success);
+    }
+
+    .alert-info {
+        background: #e6fffa;
+        color: #0f766e;
+        border-left: 4px solid #14b8a6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-wrapper">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="project-summary">
+        <h4>Project: {{ project.title }}</h4>
+        <p>Reviewing: {{ reviewee.get_full_name }} | Payment: Completed</p>
+    </div>
+
+    <div class="card">
+        {% if has_reviewed %}
+            <div class="alert alert-success">
+                ✓ You have already reviewed this project. Your feedback helps our community!
+            </div>
+        {% endif %}
+
+        <h2 class="card-title">Share Your Experience</h2>
+        <p style="color: #718096; margin-bottom: 2rem;">
+            Your honest review helps other users make informed decisions. Comments are verified as from users who have completed this project.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Overall Rating -->
+            <div class="form-group">
+                <label for="{{ form.rating.id_for_label }}">{{ form.rating.label }} *</label>
+                <div class="radio-group">
+                    {% for value, label in form.rating.field.choices %}
+                        <div class="radio-option">
+                            <input type="radio" id="id_rating_{{ forloop.counter }}" name="rating" value="{{ value }}" {% if form.rating.value == value|stringformat:"s" %}checked{% endif %} required>
+                            <label for="id_rating_{{ forloop.counter }}">{{ label }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if form.rating.errors %}
+                    <div class="form-text" style="color: var(--danger);">{{ form.rating.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Detailed Ratings -->
+            <div class="form-group">
+                <label style="margin-bottom: 1rem; display: block;">Detailed Rating (Optional)</label>
+                <div class="rating-grid">
+                    <div>
+                        <label for="{{ form.quality.id_for_label }}">{{ form.quality.label }}</label>
+                        {{ form.quality }}
+                    </div>
+                    <div>
+                        <label for="{{ form.communication.id_for_label }}">{{ form.communication.label }}</label>
+                        {{ form.communication }}
+                    </div>
+                    <div>
+                        <label for="{{ form.professionalism.id_for_label }}">{{ form.professionalism.label }}</label>
+                        {{ form.professionalism }}
+                    </div>
+                    <div>
+                        <label for="{{ form.timeliness.id_for_label }}">{{ form.timeliness.label }}</label>
+                        {{ form.timeliness }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Title -->
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">{{ form.title.label }} *</label>
+                {{ form.title }}
+                {% if form.title.help_text %}
+                    <div class="form-text">{{ form.title.help_text }}</div>
+                {% endif %}
+                {% if form.title.errors %}
+                    <div class="form-text" style="color: var(--danger);">{{ form.title.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Review Comment -->
+            <div class="form-group">
+                <label for="{{ form.comment.id_for_label }}">{{ form.comment.label }} *</label>
+                {{ form.comment }}
+                {% if form.comment.help_text %}
+                    <div class="form-text">{{ form.comment.help_text }}</div>
+                {% endif %}
+                {% if form.comment.errors %}
+                    <div class="form-text" style="color: var(--danger);">{{ form.comment.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="alert alert-info">
+                <strong>💡 Helpful Tips:</strong>
+                <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                    <li>Be honest and specific about your experience</li>
+                    <li>Focus on the work quality, not the personality</li>
+                    <li>Constructive feedback helps all users improve</li>
+                    <li>No spam, plagiarism, or off-topic content</li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+                <a href="{% url 'projects:project-detail' project.id %}" class="btn btn-secondary">Back to Project</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

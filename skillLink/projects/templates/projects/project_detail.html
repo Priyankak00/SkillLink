@@ -1,0 +1,944 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} - SkillLink{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #667eea;
+        --primary-dark: #5568d3;
+        --success: #48bb78;
+        --warning: #ed8936;
+        --danger: #f56565;
+        --light: #f7fafc;
+        --dark: #2d3748;
+        --border: #e2e8f0;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .navbar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 1rem 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .navbar-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: bold;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .navbar-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .navbar-links a {
+        color: var(--dark);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+    .navbar-links a:hover {
+        color: var(--primary);
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .back-link {
+        color: white;
+        text-decoration: none;
+        margin-bottom: 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        transition: transform 0.3s;
+    }
+
+    .back-link:hover {
+        transform: translateX(-5px);
+    }
+
+    .project-detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .project-main {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .project-hero {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 3rem;
+    }
+
+    .project-hero h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        line-height: 1.4;
+    }
+
+    .project-meta-info {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .meta-label {
+        opacity: 0.8;
+        font-size: 0.9rem;
+    }
+
+    .meta-value {
+        font-weight: 600;
+    }
+
+    .project-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .project-content {
+        padding: 3rem;
+    }
+
+    .section {
+        margin-bottom: 3rem;
+    }
+
+    .section h2 {
+        font-size: 1.5rem;
+        color: var(--dark);
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid var(--primary);
+        display: inline-block;
+    }
+
+    .section-content {
+        color: #4a5568;
+        line-height: 1.7;
+        font-size: 1rem;
+    }
+
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .sidebar-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .budget-display {
+        text-align: center;
+    }
+
+    .budget-label {
+        color: #718096;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .budget-amount {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        margin-top: 1rem;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #f0f4ff;
+        color: var(--primary);
+        margin-top: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+        background: #e8ecf9;
+    }
+
+    .btn-success {
+        background: var(--success);
+        color: white;
+        margin-top: 0.5rem;
+        padding: 0.6rem 1rem;
+        width: auto;
+        font-size: 0.9rem;
+    }
+
+    .btn-success:hover {
+        background: #38a169;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(72, 187, 120, 0.3);
+    }
+
+    .btn-danger {
+        background: var(--danger);
+        color: white;
+        margin-top: 0.5rem;
+        padding: 0.6rem 1rem;
+        width: auto;
+        font-size: 0.9rem;
+    }
+
+    .btn-danger:hover {
+        background: #e53e3e;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(245, 101, 101, 0.3);
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .client-card {
+        border-top: 3px solid var(--primary);
+    }
+
+    .client-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .client-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .client-details h3 {
+        color: var(--dark);
+        margin-bottom: 0.25rem;
+    }
+
+    .client-details p {
+        color: #718096;
+        font-size: 0.9rem;
+    }
+
+    .bids-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .bids-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 1.5rem;
+        font-weight: 600;
+    }
+
+    .bid-item {
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--border);
+        transition: background 0.3s;
+    }
+
+    .bid-item:hover {
+        background: var(--light);
+    }
+
+    .bid-item:last-child {
+        border-bottom: none;
+    }
+
+    .bid-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+    }
+
+    .bid-freelancer {
+        font-weight: 600;
+        color: var(--dark);
+    }
+
+    .bid-amount {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+
+    .bid-meta {
+        display: flex;
+        gap: 1.5rem;
+        color: #718096;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .bid-proposal {
+        color: #4a5568;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: var(--light);
+        border-radius: 8px;
+        border-left: 3px solid var(--primary);
+    }
+
+    .empty-bids {
+        padding: 2rem;
+        text-align: center;
+        color: #718096;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-open {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+
+    .status-in-progress {
+        background: #fed7d7;
+        color: #742a2a;
+    }
+
+    .status-completed {
+        background: #bee3f8;
+        color: #2c5282;
+    }
+
+    .form-section {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        margin-top: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    @media (max-width: 768px) {
+        .project-detail-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .project-hero {
+            padding: 2rem;
+        }
+
+        .project-hero h1 {
+            font-size: 1.5rem;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="navbar-content">
+        <a href="/" class="navbar-brand">SkillLink</a>
+        <div class="navbar-links">
+            <a href="{% url 'projects:project-list' %}">Projects</a>
+            <a href="{% url 'projects:my-projects' %}">My Projects</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- Back Link -->
+    <a href="{% url 'projects:project-list' %}" class="back-link">← Back to Projects</a>
+
+    <div class="project-detail-grid">
+        <!-- Main Content -->
+        <div class="project-main">
+            <!-- Project Hero -->
+            <div class="project-hero">
+                <h1>{{ project.title }}</h1>
+                <div class="project-meta-info">
+                    <div class="meta-item">
+                        <span class="meta-label">Budget:</span>
+                        <span class="meta-value">${{ project.budget }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Posted:</span>
+                        <span class="meta-value">{{ project.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Bids:</span>
+                        <span class="meta-value">{{ bids.count }}</span>
+                    </div>
+                </div>
+                <span class="project-badge status-{% if project.status == 'open' %}open{% elif project.status == 'in_progress' %}in-progress{% else %}completed{% endif %}">
+                    {{ project.get_status_display }}
+                </span>
+            </div>
+
+            <!-- Project Content -->
+            <div class="project-content">
+                <!-- Description Section -->
+                <div class="section">
+                    <h2>📋 Project Details</h2>
+                    <div class="section-content">
+                        {{ project.description|linebreaks }}
+                    </div>
+                </div>
+
+                <!-- Bids Section -->
+                <div class="section">
+                    <h2>💼 Bids Received</h2>
+                    <div class="bids-section">
+                        {% if bids %}
+                            {% for bid in bids %}
+                                <div class="bid-item">
+                                    <div class="bid-header">
+                                        <div style="flex: 1;">
+                                            <span class="bid-freelancer">{{ bid.freelancer.username }}</span>
+                                            <span style="margin-left: 1rem; color: #718096; font-size: 0.9rem;">👤 {{ bid.freelancer.title|default:"Freelancer" }}</span>
+                                        </div>
+                                        <span class="bid-amount">${{ bid.amount }}</span>
+                                    </div>
+                                    <div class="bid-meta">
+                                        <span>⏱️ {{ bid.delivery_days }} days delivery</span>
+                                        <span>📅 Bid on {{ bid.created_at|date:"M d, Y" }}</span>
+                                    </div>
+                                    <div class="bid-proposal">
+                                        <strong>Proposal:</strong><br>
+                                        {{ bid.proposal|truncatewords:50 }}
+                                    </div>
+                                    {% if user == project.client %}
+                                        <div style="display: flex; gap: 1rem;">
+                                            <button class="btn btn-success" onclick="acceptBid({{ bid.id }})">✓ Accept Bid</button>
+                                            <button class="btn btn-danger" onclick="declineBid({{ bid.id }})">✕ Decline</button>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-bids">
+                                <p>No pending bids yet. Check back soon!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Accepted Proposals Section -->
+                {% if accepted_bids %}
+                <div class="section">
+                    <h2>✅ Accepted Proposals</h2>
+                    <div class="bids-section">
+                        {% for bid in accepted_bids %}
+                            <div class="bid-item" style="background: #e6fffa; border-left: 4px solid #48bb78;">
+                                <div class="bid-header">
+                                    <div style="flex: 1;">
+                                        <span class="bid-freelancer">{{ bid.freelancer.username }}</span>
+                                        <span style="margin-left: 1rem; color: #718096; font-size: 0.9rem;">👤 {{ bid.freelancer.title|default:"Freelancer" }}</span>
+                                    </div>
+                                    <span style="font-size: 1.5rem; font-weight: bold; color: #48bb78;">${{ bid.amount }}</span>
+                                </div>
+                                <div class="bid-meta">
+                                    <span>⏱️ {{ bid.delivery_days }} days delivery</span>
+                                    <span>📅 Bid on {{ bid.created_at|date:"M d, Y" }}</span>
+                                    <span style="color: #48bb78; font-weight: 600;">✓ Status: Accepted</span>
+                                </div>
+                                <div class="bid-proposal">
+                                    <strong>Proposal:</strong><br>
+                                    {{ bid.proposal|truncatewords:50 }}
+                                </div>
+                                {% if user == project.client or user == bid.freelancer %}
+                                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                                    <a href="{% url 'projects:project-detail' project.pk %}#chat" class="btn btn-primary">💬 Go to Chat</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Declined Proposals Section -->
+                {% if declined_bids %}
+                <div class="section">
+                    <h2>🚫 Declined Proposals</h2>
+                    <div class="bids-section">
+                        {% for bid in declined_bids %}
+                            <div class="bid-item" style="opacity: 0.7; background: #fef5e7;">
+                                <div class="bid-header">
+                                    <div style="flex: 1;">
+                                        <span class="bid-freelancer">{{ bid.freelancer.username }}</span>
+                                        <span style="margin-left: 1rem; color: #718096; font-size: 0.9rem;">👤 {{ bid.freelancer.title|default:"Freelancer" }}</span>
+                                    </div>
+                                    <span style="font-size: 1.5rem; font-weight: bold; color: #ed8936;">${{ bid.amount }}</span>
+                                </div>
+                                <div class="bid-meta">
+                                    <span>⏱️ {{ bid.delivery_days }} days delivery</span>
+                                    <span>📅 Bid on {{ bid.created_at|date:"M d, Y" }}</span>
+                                    <span style="color: #ed8936; font-weight: 600;">Status: Declined</span>
+                                </div>
+                                <div class="bid-proposal">
+                                    <strong>Proposal:</strong><br>
+                                    {{ bid.proposal|truncatewords:50 }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Chat Section for Accepted Projects -->
+                {% if project.freelancer and project.status == 'in_progress' %}
+                <div class="section" id="chat">
+                    <h2>💬 Project Chat</h2>
+                    <div class="chat-container">
+                        <div class="messages-box" id="messagesBox">
+                            <div class="spinner">Loading messages...</div>
+                        </div>
+                        {% if user == project.client or user == project.freelancer %}
+                        <div class="message-input-box">
+                            <form id="messageForm" onsubmit="sendMessage(event)">
+                                {% csrf_token %}
+                                <textarea id="messageInput" placeholder="Type your message here..." required></textarea>
+                                <button type="submit" class="btn btn-primary">Send Message</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Budget Card -->
+            <div class="sidebar-card budget-display">
+                <div class="budget-label">Project Budget</div>
+                <div class="budget-amount">${{ project.budget }}</div>
+                <div style="color: #718096; font-size: 0.9rem;">
+                    {% if project.status == 'open' %}
+                        ✅ Open for Bidding
+                    {% elif project.status == 'in_progress' %}
+                        🚀 In Progress
+                    {% elif project.status == 'completed' %}
+                        ✓ Completed
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Client Card -->
+            <div class="sidebar-card client-card">
+                <div class="client-info">
+                    <div class="client-avatar">{{ project.client.username|first|upper }}</div>
+                    <div class="client-details">
+                        <h3>{{ project.client.get_full_name|default:project.client.username }}</h3>
+                        <p>{{ project.client.title|default:"Client" }}</p>
+                    </div>
+                </div>
+                <p style="color: #718096; font-size: 0.9rem;">
+                    <strong>Member since:</strong> {{ project.client.date_joined|date:"M Y" }}
+                </p>
+                <a href="#" class="btn btn-secondary">View Profile</a>
+            </div>
+
+            <!-- Action Card -->
+            {% if can_bid %}
+                <div class="sidebar-card">
+                    <h3 style="margin-bottom: 1rem; color: var(--dark);">Ready to Bid?</h3>
+                    <p style="color: #718096; font-size: 0.9rem; margin-bottom: 1rem;">
+                        Submit your proposal and let the client know why you're the perfect fit!
+                    </p>
+                    <a href="#bid-form" class="btn btn-primary">Place Your Bid</a>
+                </div>
+            {% elif user_has_bid %}
+                <div class="sidebar-card" style="background: #c6f6d5; border: 2px solid #48bb78;">
+                    <p style="color: #22543d; font-weight: 600;">✅ You have placed a bid on this project</p>
+                </div>
+            {% elif not user.is_authenticated %}
+                <div class="sidebar-card">
+                    <p style="color: #718096; font-size: 0.9rem; margin-bottom: 1rem;">
+                        Sign in to place a bid on this project
+                    </p>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Sign In</a>
+                </div>
+            {% elif user == project.client %}
+                <div class="sidebar-card" style="background: #fed7d7; border: 2px solid #fed7d7;">
+                    <p style="color: #742a2a; font-weight: 600;">This is your project</p>
+                </div>
+            {% else %}
+                <div class="sidebar-card" style="background: #fed7d7; border: 2px solid #fed7d7;">
+                    <p style="color: #742a2a; font-weight: 600;">🔒 Project no longer accepting bids</p>
+                </div>
+            {% endif %}
+
+            <!-- Stats Card -->
+            <div class="sidebar-card">
+                <h3 style="margin-bottom: 1rem; color: var(--dark);">Project Stats</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">{{ bids.count }}</div>
+                        <div style="color: #718096; font-size: 0.85rem;">Total Bids</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--success);">{{ project.created_at|timesince }}</div>
+                        <div style="color: #718096; font-size: 0.85rem;">Ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Work Completion Actions -->
+            {% if project.status == 'in_progress' and user == project.freelancer %}
+                <div class="sidebar-card" style="background: #e6f3ff; border-left: 4px solid #667eea;">
+                    <h3 style="margin-bottom: 1rem; color: var(--dark);">Submit Your Work</h3>
+                    <p style="color: #718096; font-size: 0.9rem; margin-bottom: 1rem;">
+                        Ready to submit your completed work for review?
+                    </p>
+                    <a href="{% url 'projects:submit-work' project.id %}" class="btn btn-primary">📤 Submit Work</a>
+                </div>
+            {% endif %}
+
+            <!-- Work Review Actions -->
+            {% if project.status == 'work_submitted' and user == project.client %}
+                <div class="sidebar-card" style="background: #fef3c7; border-left: 4px solid #f59e0b;">
+                    <h3 style="margin-bottom: 1rem; color: var(--dark);">Review Submitted Work</h3>
+                    <p style="color: #718096; font-size: 0.9rem; margin-bottom: 1rem;">
+                        The freelancer has submitted their work for your review.
+                    </p>
+                    <a href="{% url 'projects:review-work' project.id %}" class="btn" style="background: #f59e0b; color: white; margin-top: 1rem; cursor: pointer;">👀 Review Work</a>
+                </div>
+            {% endif %}
+
+            <!-- Payment Actions -->
+            {% if project.status == 'completed' and user == project.client and project.payment_status == 'not_started' %}
+                <div class="sidebar-card" style="background: #d1fae5; border-left: 4px solid #10b981;">
+                    <h3 style="margin-bottom: 1rem; color: var(--dark);">Payment Ready</h3>
+                    <p style="color: #718096; font-size: 0.9rem; margin-bottom: 1rem;">
+                        Work approved! Release payment to complete the project.
+                    </p>
+                    <a href="{% url 'projects:initiate-payment' project.id %}" class="btn" style="background: #10b981; color: white; margin-top: 1rem; cursor: pointer;">💳 Process Payment</a>
+                </div>
+            {% endif %}
+
+            <!-- Write Review Actions -->
+            {% if project.status == 'completed' and project.payment_status == 'released' %}
+                <div class="sidebar-card" style="background: #ede9fe; border-left: 4px solid #8b5cf6;">
+                    <h3 style="margin-bottom: 1rem; color: var(--dark);">Share Your Experience</h3>
+                    <p style="color: #718096; font-size: 0.9rem; margin-bottom: 1rem;">
+                        Help the community by sharing your experience on this project.
+                    </p>
+                    <a href="{% url 'projects:write-review' project.id %}" class="btn" style="background: #8b5cf6; color: white; margin-top: 1rem; cursor: pointer;">⭐ Write Review</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Bid Form (if applicable) -->
+    {% if can_bid %}
+        <div class="form-section" id="bid-form">
+            <h2 style="margin-bottom: 1.5rem;">💰 Submit Your Bid</h2>
+            <form method="post" action="{% url 'projects:bid-create' project.id %}">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="amount">Your Bid Amount ($)</label>
+                    <input type="number" id="amount" name="amount" step="0.01" placeholder="e.g., 500.00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="delivery_days">Estimated Delivery (days)</label>
+                    <input type="number" id="delivery_days" name="delivery_days" placeholder="e.g., 7" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="proposal">Your Proposal</label>
+                    <textarea id="proposal" name="proposal" placeholder="Describe your approach, experience, and why you're the best fit for this project..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">✅ Submit Bid</button>
+            </form>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    function acceptBid(bidId) {
+        if (confirm('Accept this bid? This will assign the freelancer to the project.')) {
+            fetch(`/projects/api/bids/${bidId}/accept/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Bid accepted successfully!');
+                    location.reload();
+                } else {
+                    alert('Error accepting bid. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error accepting bid.');
+            });
+        }
+    }
+
+    function declineBid(bidId) {
+        if (confirm('Decline this bid? The freelancer will be notified.')) {
+            fetch(`/projects/api/bids/${bidId}/reject/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Bid declined successfully!');
+                    location.reload();
+                } else {
+                    alert('Error declining bid. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error declining bid.');
+            });
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // Chat functionality
+    let chatSocket = null;
+
+    function initializeChat() {
+        const projectId = {{ project.id }};
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const chatUrl = `${protocol}//${window.location.host}/ws/chat/${projectId}/`;
+        
+        chatSocket = new WebSocket(chatUrl);
+        
+        chatSocket.onopen = function(e) {
+            console.log('Chat socket opened');
+            loadMessages();
+        };
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            displayMessage(data.username, data.message);
+        };
+
+        chatSocket.onclose = function(e) {
+            console.log('Chat socket closed');
+        };
+
+        chatSocket.onerror = function(e) {
+            console.error('Chat socket error:', e);
+        };
+    }
+
+    function sendMessage(event) {
+        event.preventDefault();
+        const messageInput = document.getElementById('messageInput');
+        const message = messageInput.value.trim();
+
+        if (message && chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInput.value = '';
+        }
+    }
+
+    function displayMessage(username, message) {
+        const messagesBox = document.getElementById('messagesBox');
+        if (!messagesBox) return;
+
+        const messageDiv = document.createElement('div');
+        messageDiv.style.cssText = 'padding: 10px; border-bottom: 1px solid #e2e8f0; word-wrap: break-word;';
+        messageDiv.innerHTML = `<strong>${username}:</strong> ${message}`;
+        messagesBox.appendChild(messageDiv);
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+    }
+
+    function loadMessages() {
+        const projectId = {{ project.id }};
+        fetch(`/chat/api/projects/${projectId}/messages/`, {
+            headers: {
+                'X-CSRFToken': csrftoken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const messagesBox = document.getElementById('messagesBox');
+            if (messagesBox) {
+                messagesBox.innerHTML = '';
+                // Handle both array and object responses
+                const messages = Array.isArray(data) ? data : (data.results || []);
+                messages.forEach(msg => {
+                    displayMessage(msg.sender_username, msg.content);
+                });
+            }
+        })
+        .catch(error => console.error('Error loading messages:', error));
+    }
+
+    // Initialize chat when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.querySelector('.chat-container')) {
+            initializeChat();
+        }
+    });
+
+</script>
+
+{% endblock %}

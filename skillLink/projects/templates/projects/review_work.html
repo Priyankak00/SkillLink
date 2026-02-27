@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Review Work - {{ project.title }} - SkillLink{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #667eea;
+        --primary-dark: #5568d3;
+        --success: #48bb78;
+        --warning: #ed8936;
+        --danger: #f56565;
+        --light: #f7fafc;
+        --dark: #2d3748;
+        --border: #e2e8f0;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container-wrapper {
+        max-width: 1000px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 1rem;
+        border-bottom: 3px solid var(--primary);
+        padding-bottom: 0.5rem;
+    }
+
+    .project-summary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .project-summary h4 {
+        margin: 0 0 0.5rem 0;
+    }
+
+    .submission-section {
+        background: #f7fafc;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        border-left: 4px solid var(--primary);
+    }
+
+    .submission-section h4 {
+        color: var(--dark);
+        margin-top: 0;
+    }
+
+    .submission-files {
+        background: white;
+        padding: 1rem;
+        border-radius: 6px;
+        margin-top: 0.5rem;
+    }
+
+    .submission-files a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        word-break: break-all;
+    }
+
+    .submission-files a:hover {
+        text-decoration: underline;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .radio-group {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .radio-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .radio-item:hover {
+        border-color: var(--primary);
+        background: #f8f9ff;
+    }
+
+    .radio-item input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        margin-right: 0.75rem;
+        cursor: pointer;
+    }
+
+    .radio-item input[type="radio"]:checked + label {
+        color: var(--primary);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--border);
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+        font-family: inherit;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-text {
+        font-size: 0.875rem;
+        color: #718096;
+        margin-top: 0.25rem;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-success {
+        background: var(--success);
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #38a169;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(72, 187, 120, 0.4);
+    }
+
+    .btn-warning {
+        background: var(--warning);
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background: #d97706;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(237, 137, 54, 0.4);
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: var(--dark);
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e0;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+
+    .alert-warning {
+        background: #fffbeb;
+        color: #854d0e;
+        border-left: 4px solid #f59e0b;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-wrapper">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="project-summary">
+        <h4>Project: {{ project.title }}</h4>
+        <p>Status: {{ project.get_status_display }} | Budget: ${{ project.budget }}</p>
+    </div>
+
+    <div class="card">
+        <h2 class="card-title">Review Submitted Work</h2>
+
+        <div class="submission-section">
+            <h4>Freelancer's Submission Notes:</h4>
+            <p>{{ work.submission_notes }}</p>
+
+            {% if work.submission_files_link %}
+                <div class="submission-files">
+                    <strong>📎 Deliverables Link:</strong><br>
+                    <a href="{{ work.submission_files_link }}" target="_blank" rel="noopener noreferrer">
+                        {{ work.submission_files_link }}
+                    </a>
+                </div>
+            {% endif %}
+
+            <div style="margin-top: 1rem; font-size: 0.9rem; color: #718096;">
+                Submitted on: {{ work.submitted_at|date:"M d, Y H:i" }}
+                {% if work.revision_count > 0 %}
+                    | Revision #{{ work.revision_count }}
+                {% endif %}
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>What would you like to do?</label>
+                <div class="radio-group" style="display: block;">
+                    {% for value, label in form.action.field.choices %}
+                        <div class="radio-item">
+                            <input type="radio" id="id_action_{{ forloop.counter }}" name="action" value="{{ value }}" {% if form.action.value == value %}checked{% endif %}>
+                            <label for="id_action_{{ forloop.counter }}" style="margin: 0; cursor: pointer;">
+                                <strong>{{ label }}</strong>
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.review_notes.id_for_label }}">{{ form.review_notes.label }}</label>
+                {{ form.review_notes }}
+                {% if form.review_notes.help_text %}
+                    <div class="form-text">{{ form.review_notes.help_text }}</div>
+                {% endif %}
+                {% if form.review_notes.errors %}
+                    <div class="form-text" style="color: var(--danger);">
+                        {{ form.review_notes.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Important:</strong>
+                <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                    <li>Please review all deliverables carefully before approving</li>
+                    <li>If you approve, payment will be processed immediately</li>
+                    <li>You can request revisions before approval</li>
+                </ul>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" formaction="" name="action" value="approved" class="btn btn-success">✓ Approve & Move to Payment</button>
+                <button type="submit" formaction="" name="action" value="revision_requested" class="btn btn-warning">! Request Revisions</button>
+                <a href="{% url 'projects:project-detail' project.id %}" class="btn btn-secondary">Back to Project</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
